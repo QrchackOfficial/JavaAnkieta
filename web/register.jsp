@@ -3,28 +3,34 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Signin Template · Bootstrap</title>
-
+    <title>Register - SurveyCreator</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link href="style.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/61ee8898bc.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-    <form action="" id="formLogin" class="align-items-center">
-        <div class="form-group">
-            <input class="form-control" type="email" id="email" placeholder="Email address" required autofocus>
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" id="password" placeholder="Password" required>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        </div>
+<div class="container text-center">
+    <form action="" id="formRegister" method="post">
         <div class="form-group text-center">
-            <label for="checkRemember" class="form-check-label"></label>
-            <input class="form-check-input" type="checkbox" id="checkRemember"> Remember me
+            <i id="logo" class="fas fa-bullhorn fa-7x"></i>
+            <h1 id="appName">SurveyCreator</h1>
         </div>
+        <div class="form-group">
+            <input class="form-control" name="email" type="email" placeholder="Email address" required autofocus>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="password" type="password" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="password2" type="password" placeholder="Repeat password" required>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+        </div>
+        <span class="text-muted">
+            <a href="login.jsp">Already have an account?</a>
+        </span>
     </form>
 </div>
 
