@@ -1,3 +1,6 @@
+<%@page import="bean.LoginDao"%>
+<jsp:useBean id="obj" class="bean.LoginBean"/>
+<jsp:setProperty name="obj" property="*"/>
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,22 +9,39 @@
     <title>Sign in - SurveyCreator</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/61ee8898bc.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-<%
-    String email = request.getParameter("email");
-    String password = request.getParameter("password");
-    boolean remember = request.getParameter("checkRemember") != null;
-%>
-<div class="container text-center">
+<div class="container form-center">
     <form action="" id="formLogin" method="post">
         <div class="form-group text-center">
-            <i id="logo" class="fas fa-bullhorn fa-7x"></i>
+            <img id="logo" src="img/logo.svg"/>
             <h1 id="appName">SurveyCreator</h1>
         </div>
+        <%
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            boolean remember = request.getParameter("checkRemember") != null;
+
+            if (email != null && password != null) {
+                boolean status = LoginDao.validate(obj);
+                if (status) {
+                    session.setAttribute("userid", email);
+                    response.sendRedirect("dashboard.jsp");
+        %>
+        <div class="alert alert-success" role="alert">
+            Aye! You shall pass!
+        </div>
+        <%
+                } else {
+        %>
+        <div class="alert alert-warning" role="alert">
+            Not quite right... try again?
+        </div>
+        <%
+                }
+            }
+        %>
         <div class="form-group">
             <input class="form-control" name="email" type="email" placeholder="Email address" required autofocus>
         </div>
@@ -35,7 +55,7 @@
             <label for="checkRemember" class="form-check-label"></label>
             <input class="form-check-input" type="checkbox" id="checkRemember" name="checkRemember"> Remember me
         </div>
-        <span class="text-muted">
+        <span>
             <a href="register.jsp">Need an account?</a>
         </span>
     </form>
