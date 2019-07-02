@@ -10,10 +10,6 @@ public class ConnectionProvider {
     private static Connection con = null;
 
     static  {
-
-    }
-
-    public static Connection getCon() {
         try {
             Class.forName(DRIVER).newInstance();
             con = DriverManager.getConnection(CONNECTION_URL, USERNAME, PASSWORD);
@@ -27,6 +23,9 @@ public class ConnectionProvider {
         } catch (InstantiationException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Connection getCon() {
         return con;
     }
 }

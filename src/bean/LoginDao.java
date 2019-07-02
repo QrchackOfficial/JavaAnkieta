@@ -16,9 +16,15 @@ public class LoginDao {
             ps.setString(2,bean.getPassword());
             ResultSet rs = ps.executeQuery();
             status = rs.next();
+            bean.setUid(rs.getInt("id"));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return status;
+        if (status) return true;
+        else return false;
+    }
+
+    public static int getUid(LoginBean bean) {
+        return bean.getUid();
     }
 }

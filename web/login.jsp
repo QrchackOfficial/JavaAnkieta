@@ -27,6 +27,7 @@
                 boolean status = LoginDao.validate(obj);
                 if (status) {
                     session.setAttribute("userid", email);
+                    session.setAttribute("uid", LoginDao.getUid(obj));
                     response.sendRedirect("dashboard.jsp");
         %>
         <div class="alert alert-success" role="alert">

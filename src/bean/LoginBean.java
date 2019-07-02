@@ -2,6 +2,7 @@ package bean;
 
 public class LoginBean {
     private String email, password;
+    private int uid = 0;
 
     public String getEmail() {
         return email;
@@ -17,5 +18,13 @@ public class LoginBean {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
+    public int getUid() {
+        return uid;
     }
 }

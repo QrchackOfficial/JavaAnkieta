@@ -1,3 +1,7 @@
+<%@page import="bean.Survey" %>
+<%@ page import="java.sql.ResultSet" %>
+<jsp:useBean id="obj" class="bean.LoginBean"/>
+<jsp:setProperty name="obj" property="*"/>
 <!doctype html>
 <html lang="en">
 <head>
@@ -13,6 +17,7 @@
     if (session.getAttribute("userid") == null) {
         response.sendRedirect("login.jsp");
     }
+    Integer uid = (Integer) session.getAttribute("uid");
 %>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top flex-md-nowrap">
     <a href="" class="navbar-brand">
@@ -114,19 +119,22 @@
                     <th>Actions</th>
                     </thead>
                     <tbody>
-                    <tr>
+                        <%
+                            ResultSet rs = Survey.getLastSurveys(uid);
+                            while (rs.next()) {
+                        %>
+                        <tr>
                         <td>
-                            <a href="">
-                                Survey 1
+                            <a href=""><%=rs.getString("name")%>
                             </a>
                         </td>
                         <td>
-                                <span class="badge badge-pill badge-secondary">
-                                    15m ago
-                                </span>
+                            <span class="badge badge-pill badge-secondary">
+                                <%=rs.getDate("created")%>
+                            </span>
                         </td>
                         <td>
-                            15
+                            (Answers)
                         </td>
                         <td>
                             <div class="btn-toolbar mb-2 mb-md-0">
@@ -143,93 +151,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <a href="">
-                                Survey 2
-                            </a>
-                        </td>
-                        <td>
-                                <span class="badge badge-pill badge-secondary">
-                                    25m ago
-                                </span>
-                        </td>
-                        <td>
-                            7
-                        </td>
-                        <td>
-                            <div class="btn-toolbar mb-2 mb-md-0">
-                                <div class="btn-group mr-2">
-                                    <button type="button" class="btn btn-sm btn-warning">
-                                        <i data-feather="edit"></i>
-                                        Edit
-                                    </button>
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i data-feather="delete"></i>
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="">
-                                Survey 3
-                            </a>
-                        </td>
-                        <td>
-                                <span class="badge badge-pill badge-secondary">
-                                    3h ago
-                                </span>
-                        </td>
-                        <td>
-                            48
-                        </td>
-                        <td>
-                            <div class="btn-toolbar mb-2 mb-md-0">
-                                <div class="btn-group mr-2">
-                                    <button type="button" class="btn btn-sm btn-warning">
-                                        <i data-feather="edit"></i>
-                                        Edit
-                                    </button>
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i data-feather="delete"></i>
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="">
-                                Survey 4
-                            </a>
-                        </td>
-                        <td>
-                                <span class="badge badge-pill badge-secondary">
-                                    12d ago
-                                </span>
-                        </td>
-                        <td>
-                            7
-                        </td>
-                        <td>
-                            <div class="btn-toolbar mb-2 mb-md-0">
-                                <div class="btn-group mr-2">
-                                    <button type="button" class="btn btn-sm btn-warning">
-                                        <i data-feather="edit"></i>
-                                        Edit
-                                    </button>
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i data-feather="delete"></i>
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
+                        <% } %>
                     </tbody>
                 </table>
             </div>
