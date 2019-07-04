@@ -9,6 +9,7 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="mysql-connector-java-8.0.16" />
+          <element id="library" level="project" name="Maven: org.ocpsoft.prettytime:prettytime:4.0.1.Final" />
         </element>
       </element>
       <element id="dir-copy" path="$PROJECT_DIR$/web/img" />
