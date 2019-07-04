@@ -59,7 +59,7 @@
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">
+                        <a class="nav-link active" href="dashboard.jsp">
                             <span data-feather="home"></span>
                             Dashboard
                         </a>
@@ -100,70 +100,51 @@
                 </ul>
             </div>
         </nav>
+        <%
+            Integer surveyid = Integer.parseInt(request.getParameter("id"));
+            ResultSet questions = Survey.getQuestionsBySurveyId(surveyid);
+        %>
         <main role="main" class="ml-sm-auto col-lg-10">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-                <h3><%=Constants.entryName%>s</h3>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group mr-2">
-                        <button class="btn btn-primary">
-                            <i data-feather="plus-square"></i>
-                            Create new
-                        </button>
+                <h3>Editing <%=Constants.entryName%>: <%=Survey.getTitleBySurveyId(surveyid)%>
+                </h3>
+            </div>
+            <div class="text-center line-bottome">
+                <form action="" class="formEdit">
+                    <%
+                        while (questions.next()) {
+                    %>
+                    <div class="container text-center">
+                        <div class="form-group row">
+                            <input class="form-control form-control-lg text-center" type="text"
+                                   value="<%=questions.getString("question")%>">
+                        </div>
+                        <%
+                            for (int i = 1; i <= 4; i++) {
+                        %>
+                        <div class="form-group row">
+                            <input class="form-control form-control-sm text-center"
+                                   type="text" <%if(questions.getString("answer" + i) != null) out.print("value=\"" + questions.getString("answer" + i) + "\"");%>
+                                   placeholder="Answer <%=i%>">
+                        </div>
+                        <%
+                            }
+                        %>
                     </div>
+                    <%
+                        }
+                    %>
+                    <button class="btn btn-primary">
+                        <i data-feather="plus"></i>
+                        Add
+                    </button>
+                </form>
+                <div class="mt-4">
+                    <p class="text-muted small text-center">
+                        Please don't forget to <a href="logout.jsp">sign out</a> when you're done!
+                    </p>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    <thead>
-                    <th>Title</th>
-                    <th>Created</th>
-                    <th>Answers</th>
-                    <th>Actions</th>
-                    </thead>
-                    <tbody>
-                    <%
-                        ResultSet rs = Survey.getLastSurveys(uid);
-                        while (rs.next()) {
-                    %>
-                    <tr>
-                        <td>
-                            <a href=""><%=rs.getString("name")%>
-                            </a>
-                        </td>
-                        <td>
-                            <span class="badge badge-pill badge-secondary" data-toggle="tooltip"
-                                  title="<%=rs.getTimestamp("created")%>">
-                                <%=Survey.datePrint(rs.getTimestamp("created"))%>
-                            </span>
-                        </td>
-                        <td>
-                                <%=rs.getInt("answers")%>
-                        <td>
-                            <div class="btn-toolbar mb-2 mb-md-0">
-                                <div class="btn-group mr-2">
-                                    <a href="edit.jsp?id=<%=rs.getInt("id")%>">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary"
-                                                data-toggle="tooltip" title="Edit">
-                                            <i data-feather="edit"></i>
-                                            <%--                                        Edit--%>
-                                        </button>
-                                    </a>
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-toggle="tooltip"
-                                            title="Delete">
-                                        <i data-feather="delete"></i>
-                                        <%--                                        Delete--%>
-                                    </button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <% } %>
-                    </tbody>
-                </table>
-            </div>
-            <p class="text-muted small text-center">
-                Please don't forget to <a href="logout.jsp">sign out</a> when you're done!
-            </p>
         </main>
     </div>
 </div>

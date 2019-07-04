@@ -1,4 +1,5 @@
 <%@page import="bean.LoginDao"%>
+<%@page import="pl.qrchack.Constants" %>
 <jsp:useBean id="obj" class="bean.LoginBean"/>
 <jsp:setProperty name="obj" property="*"/>
 <!doctype html>
@@ -6,7 +7,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Sign in - SurveyCreator</title>
+    <title>Sign in - <%=Constants.appName%>
+    </title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
@@ -16,7 +18,8 @@
     <form action="" id="formLogin" method="post">
         <div class="form-group text-center">
             <img id="logo" src="img/logo.svg"/>
-            <h1 id="appName">SurveyCreator</h1>
+            <h1 id="appName"><%=Constants.appName%>
+            </h1>
         </div>
         <%
             String email = request.getParameter("email");

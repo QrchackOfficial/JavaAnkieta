@@ -20,8 +20,7 @@ public class LoginDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (status) return true;
-        else return false;
+        return status;
     }
 
     public static int getUid(LoginBean bean) {
