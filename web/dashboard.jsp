@@ -1,6 +1,8 @@
 <%@page import="bean.Survey" %>
 <%@page import="pl.qrchack.Constants" %>
 <%@page import="java.sql.ResultSet" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <jsp:useBean id="obj" class="bean.LoginBean"/>
 <jsp:setProperty name="obj" property="*"/>
 <!doctype html>
@@ -16,10 +18,12 @@
 </head>
 <body>
 <%
-    if (session.getAttribute("userid") == null) {
+    Integer uid = 0;
+    if (session.getAttribute("uid") == null) {
         response.sendRedirect("login.jsp");
+    } else {
+        uid = (Integer) session.getAttribute("uid");
     }
-    Integer uid = (Integer) session.getAttribute("uid");
 %>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top flex-md-nowrap">
     <a href="" class="navbar-brand">
@@ -53,13 +57,13 @@
         </ul>
     </div>
 </nav>
-<div class="container-fluid">
+<div class="container">
     <div class="row">
         <nav class="col-md-2 d-none d-lg-block sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">
+                        <a class="nav-link active" href="dashboard.jsp">
                             <span data-feather="home"></span>
                             Dashboard
                         </a>
@@ -105,13 +109,26 @@
                 <h3><%=Constants.entryName%>s</h3>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group mr-2">
-                        <button class="btn btn-primary">
-                            <i data-feather="plus-square"></i>
-                            Create new
-                        </button>
+                        <a href="add.jsp">
+                            <button class="btn btn-primary">
+                                <i data-feather="plus-square"></i>
+                                Create new
+                            </button>
+                        </a>
                     </div>
                 </div>
             </div>
+            <%
+                if (request.getParameter("action") != null) {
+                    if (request.getParameter("action").equals("deleted")) {
+                        out.println(
+                                "<div class=\"alert alert-success\" role=\"alert\">\n" +
+                                        "The entry was deleted successfully\n" +
+                                        "</div>"
+                        );
+                    }
+                }
+            %>
             <div class="table-responsive">
                 <table class="table table-striped table-sm">
                     <thead>
@@ -124,6 +141,8 @@
                     <%
                         ResultSet rs = Survey.getLastSurveys(uid);
                         while (rs.next()) {
+                            Date d = new Date(rs.getTimestamp("created").getTime());
+                            String date = new SimpleDateFormat("E, d MMM").format(d) + " at " + new SimpleDateFormat("H:mm").format(d);
                     %>
                     <tr>
                         <td>
@@ -132,7 +151,7 @@
                         </td>
                         <td>
                             <span class="badge badge-pill badge-secondary" data-toggle="tooltip"
-                                  title="<%=rs.getTimestamp("created")%>">
+                                  title="<%=date%>">
                                 <%=Survey.datePrint(rs.getTimestamp("created"))%>
                             </span>
                         </td>
@@ -140,19 +159,19 @@
                                 <%=rs.getInt("answers")%>
                         <td>
                             <div class="btn-toolbar mb-2 mb-md-0">
-                                <div class="btn-group mr-2">
+                                <div class="mr-2">
                                     <a href="edit.jsp?id=<%=rs.getInt("id")%>">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary"
-                                                data-toggle="tooltip" title="Edit">
+                                        <button type="button" class="btn btn-sm btn-secondary">
                                             <i data-feather="edit"></i>
-                                            <%--                                        Edit--%>
+                                            Edit
                                         </button>
                                     </a>
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-toggle="tooltip"
-                                            title="Delete">
-                                        <i data-feather="delete"></i>
-                                        <%--                                        Delete--%>
-                                    </button>
+                                    <a href="delete.jsp?id=<%=rs.getInt("id")%>">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i data-feather="delete"></i>
+                                            Delete
+                                        </button>
+                                    </a>
                                 </div>
                             </div>
                         </td>

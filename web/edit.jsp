@@ -1,6 +1,10 @@
-<%@page import="bean.Survey" %>
-<%@page import="pl.qrchack.Constants" %>
-<%@page import="java.sql.ResultSet" %>
+<%@ page import="bean.ConnectionProvider" %>
+<%@ page import="bean.Survey" %>
+<%@ page import="pl.qrchack.Constants" %>
+<%@ page import="java.sql.Connection" %>
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="java.sql.SQLException" %>
 <jsp:useBean id="obj" class="bean.LoginBean"/>
 <jsp:setProperty name="obj" property="*"/>
 <!doctype html>
@@ -16,10 +20,43 @@
 </head>
 <body>
 <%
-    if (session.getAttribute("userid") == null) {
+    if (session.getAttribute("uid") == null) {
         response.sendRedirect("login.jsp");
     }
-    Integer uid = (Integer) session.getAttribute("uid");
+    Integer uid = Integer.parseInt(session.getAttribute("uid").toString());
+    if (request.getParameter("submit") != null) {
+        Integer surveyid = Integer.parseInt(request.getParameter("id"));
+        Survey.clearSurvey(surveyid);
+        int row = 1;
+        int numrows = Integer.parseInt(request.getParameter("numrows"));
+        try {
+            Connection con = ConnectionProvider.getCon();
+            PreparedStatement ps = con.prepareStatement(
+                    "update JavaAnkieta.surveys set name=? where id=?"
+            );
+            ps.setString(1, request.getParameter("title"));
+            ps.setInt(2, surveyid);
+            ps.executeUpdate();
+            ps.close();
+            while (row <= numrows) {
+                ps = con.prepareStatement(
+                        "insert into JavaAnkieta.questions(id, survey_id, question, answer1, answer2, answer3, answer4, qorder) values(null,?,?,?,?,?,?,?);"
+                );
+                ps.setInt(1, Integer.parseInt(request.getParameter("id")));
+                ps.setString(2, request.getParameter("question" + row));
+                ps.setString(3, request.getParameter("question" + row + "answer1"));
+                ps.setString(4, request.getParameter("question" + row + "answer2"));
+                ps.setString(5, request.getParameter("question" + row + "answer3"));
+                ps.setString(6, request.getParameter("question" + row + "answer4"));
+                ps.setInt(7, row);
+                ps.executeUpdate();
+                ps.close();
+                row++;
+            }
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
 %>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top flex-md-nowrap">
     <a href="" class="navbar-brand">
@@ -53,7 +90,7 @@
         </ul>
     </div>
 </nav>
-<div class="container-fluid">
+<div class="container">
     <div class="row">
         <nav class="col-md-2 d-none d-lg-block sidebar">
             <div class="sidebar-sticky">
@@ -109,34 +146,62 @@
                 <h3>Editing <%=Constants.entryName%>: <%=Survey.getTitleBySurveyId(surveyid)%>
                 </h3>
             </div>
-            <div class="text-center line-bottome">
-                <form action="" class="formEdit">
+            <div class="text-center line-bottom">
+                <form action="?id=<%=request.getParameter("id")%>" method="post" class="formEdit">
                     <%
+                        out.print(
+                                "<div class='container text-center'>" +
+                                        "<div class='form-group row'>" +
+                                        "<input class='form-control form-control-lg text-center' type='text' name='title' value='" + Survey.getTitleBySurveyId(surveyid) + "'>" +
+                                        "</div>" +
+                                        "</div>"
+                        );
+                        int rows = 0;
                         while (questions.next()) {
-                    %>
-                    <div class="container text-center">
-                        <div class="form-group row">
-                            <input class="form-control form-control-lg text-center" type="text"
-                                   value="<%=questions.getString("question")%>">
-                        </div>
-                        <%
+                            rows++;
+                            out.print(
+                                    "<div class='container text-center' id='row" + rows + "'>" +
+                                            "<div class='form-group row'>" +
+                                            "<input name='question" + rows + "' class='form-control form-control-lg text-center' type='text'" +
+                                            "value='" + questions.getString("question") + "' required>" +
+                                            "</div>"
+                            );
                             for (int i = 1; i <= 4; i++) {
-                        %>
-                        <div class="form-group row">
-                            <input class="form-control form-control-sm text-center"
-                                   type="text" <%if(questions.getString("answer" + i) != null) out.print("value=\"" + questions.getString("answer" + i) + "\"");%>
-                                   placeholder="Answer <%=i%>">
-                        </div>
-                        <%
+                                out.print(
+                                        "<div class='form-group row'>" +
+                                                "<input name='question" + rows + "answer" + i + "' class='form-control form-control-sm text-center'" +
+                                                "type='text' "
+                                );
+                                if (questions.getString("answer" + i) != null) {
+                                    // include answer values if present
+                                    out.print("value='" + questions.getString("answer" + i) + "'");
+                                }
+                                out.print(
+                                        "placeholder='Answer " + i + "'>" +
+                                                "</div>"
+                                );
                             }
-                        %>
-                    </div>
-                    <%
+                            if (rows != 1) {
+                                out.println(
+                                        "<p>" +
+                                                "<button class='btn btn-sm btn-danger' onclick='removeRow(" + rows + ")'>" +
+                                                "<i data-feather='delete'></i>" +
+                                                " Delete Question" +
+                                                "</button>" +
+                                                "</p>"
+                                );
+                            }
+                            out.println("</div>");
                         }
+                        out.println("<input type='hidden' id='numrows' name='numrows' value='" + rows + "'>");
                     %>
-                    <button class="btn btn-primary">
+                    <div id="btnAdd" class="btn btn-primary" onclick="addRow()">
                         <i data-feather="plus"></i>
                         Add
+                    </div>
+                    <button id="btnSave" class="btn btn-success" type="submit" name="submit" value="submit">
+                        <i data-feather="check"></i>
+                        Save changes
                     </button>
                 </form>
                 <div class="mt-4">
@@ -148,16 +213,53 @@
         </main>
     </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 <script>
-    feather.replace();
-    $(function () {
+    var rowNum = <%=rows%>;
+
+    function addRow() {
+        rowNum++;
+        var row = "<div class='container text-center' id='row" + rowNum + "'>" +
+            "     <div class='form-group row'>" +
+            "         <input name='question" + rowNum + "' class='form-control form-control-lg text-center' type='text' placeholder='Question " + rowNum + "' required>" +
+            "     </div>" +
+            "     <div class='form-group row'>" +
+            "         <input name='question" + rowNum + "answer1' type='form-control form-control-sm text-center' type='text' placeholder='Answer 1'>" +
+            "     </div>" +
+            "     <div class='form-group row'>" +
+            "         <input name='question" + rowNum + "answer2' type='form-control form-control-sm text-center' type='text' placeholder='Answer 2'>" +
+            "     </div>" +
+            "     <div class='form-group row'>" +
+            "         <input name='question" + rowNum + "answer3' type='form-control form-control-sm text-center' type='text' placeholder='Answer 3'>" +
+            "     </div>" +
+            "     <div class='form-group row'>" +
+            "         <input name='question" + rowNum + "answer4' type='form-control form-control-sm text-center' type='text' placeholder='Answer 4'>" +
+            "     </div>" +
+            "     <p>" +
+            "         <button class='btn btn-sm btn-danger' onclick=removeRow(" + rowNum + ")>" +
+            "             <i data-feather='delete'></i>" +
+            "               Delete Question" +
+            "         </button>" +
+            "     </p>" +
+            "</div>";
+        $("#btnAdd").before(row);
+        $("#numrows").val(rowNum);
+        feather.replace();
+    }
+
+    function removeRow(num) {
+        $("#row" + num).remove();
+        rowNum--;
+        $("#numrows").val(rowNum);
+    }
+
+    $(document).ready(function () {
+        feather.replace();
         $('[data-toggle="tooltip"]').tooltip()
-    })
+    });
 </script>
 </body>
 </html>

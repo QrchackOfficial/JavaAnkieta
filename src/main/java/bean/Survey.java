@@ -57,6 +57,40 @@ public class Survey {
         return null;
     }
 
+    public static void clearSurvey(Integer survey_id) {
+        ResultSet rs;
+        try {
+            Connection con = ConnectionProvider.getCon();
+            PreparedStatement ps = con.prepareStatement(
+                    "delete from JavaAnkieta.questions where survey_id=?"
+            );
+            ps.setInt(1, survey_id);
+            ps.executeUpdate();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteSurvey(Integer survey_id) {
+        try {
+            Connection con = ConnectionProvider.getCon();
+            PreparedStatement ps = con.prepareStatement(
+                    "delete from JavaAnkieta.questions where survey_id=?"
+            );
+            ps.setInt(1, survey_id);
+            ps.executeUpdate();
+            ps = con.prepareStatement(
+                    "delete from JavaAnkieta.surveys where id=?"
+            );
+            ps.setInt(1, survey_id);
+            ps.executeUpdate();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static ResultSet getQuestionsBySurveyId(Integer survey_id) {
         ResultSet rs;
         try {
