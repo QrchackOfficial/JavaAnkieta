@@ -1,4 +1,7 @@
+<%@page import="bean.LoginDao" %>
 <%@page import="pl.qrchack.Constants" %>
+<jsp:useBean id="obj" class="bean.LoginBean"/>
+<jsp:setProperty name="obj" property="*"/>
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,6 +14,20 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<%
+    String email = request.getParameter("email");
+    String password = request.getParameter("password");
+
+    if (email != null && password != null) {
+        LoginDao.addUser(email, password);
+    }
+    boolean status = LoginDao.validate(obj);
+    if (status) {
+        session.setAttribute("userid", email);
+        session.setAttribute("uid", LoginDao.getUid(obj));
+        response.sendRedirect("dashboard.jsp");
+    }
+%>
 <div class="container form-center">
     <form action="" id="formRegister" method="post">
         <div class="form-group text-center">

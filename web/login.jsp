@@ -24,7 +24,7 @@
         <%
             String email = request.getParameter("email");
             String password = request.getParameter("password");
-            boolean remember = request.getParameter("checkRemember") != null;
+//            boolean remember = request.getParameter("checkRemember") != null;
 
             if (email != null && password != null) {
                 boolean status = LoginDao.validate(obj);
@@ -55,10 +55,10 @@
         <div class="form-group">
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         </div>
-        <div class="form-group text-center">
-            <label for="checkRemember" class="form-check-label"></label>
-            <input class="form-check-input" type="checkbox" id="checkRemember" name="checkRemember"> Remember me
-        </div>
+        <%--        <div class="form-group text-center">--%>
+        <%--            <label for="checkRemember" class="form-check-label"></label>--%>
+        <%--            <input class="form-check-input" type="checkbox" id="checkRemember" name="checkRemember"> Remember me--%>
+        <%--        </div>--%>
         <span>
             <a href="register.jsp">Need an account?</a>
         </span>

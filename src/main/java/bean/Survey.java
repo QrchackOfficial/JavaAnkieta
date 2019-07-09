@@ -130,6 +130,25 @@ public class Survey {
         return null;
     }
 
+    public static Integer getAnswerCountByQuestionId(Integer question_id, Integer answer) {
+        ResultSet rs;
+        try {
+            Connection con = ConnectionProvider.getCon();
+            PreparedStatement ps = con.prepareStatement(
+                    "select count(id) from answers where questionid=? and answer=?"
+            );
+            ps.setInt(1, question_id);
+            ps.setInt(2, answer);
+            rs = ps.executeQuery();
+            rs.next();
+            Integer result = rs.getInt(1);
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static String datePrint(Timestamp d) {
         return p.format(d);
     }

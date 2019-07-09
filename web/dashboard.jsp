@@ -36,18 +36,6 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">
-                    <i data-feather="home"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i data-feather="bar-chart-2"></i>
-                    Statistics
-                </a>
-            </li>
             <li class="nav-item">
                 <a href="logout.jsp" class="nav-link">
                     <i data-feather="log-out"></i>
@@ -66,39 +54,6 @@
                         <a class="nav-link active" href="dashboard.jsp">
                             <span data-feather="home"></span>
                             Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="bar-chart-2"></span>
-                            Statistics
-                        </a>
-                    </li>
-                </ul>
-
-                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                    <span>My <%=Constants.entryName%>s</span>
-                    <a class="d-flex align-items-center text-muted" href="#">
-                        <span data-feather="plus-circle"></span>
-                    </a>
-                </h6>
-                <ul class="nav flex-column mb-2">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file-text"></span>
-                            Survey 1
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file-text"></span>
-                            Survey 2
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file-text"></span>
-                            Survey 3
                         </a>
                     </li>
                 </ul>
@@ -146,7 +101,7 @@
                     %>
                     <tr>
                         <td>
-                            <a href=""><%=rs.getString("name")%>
+                            <a href="stats.jsp?id=<%=rs.getInt("id")%>"><%=rs.getString("name")%>
                             </a>
                         </td>
                         <td>
