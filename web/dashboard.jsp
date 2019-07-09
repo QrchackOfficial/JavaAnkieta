@@ -158,22 +158,22 @@
                         <td>
                                 <%=rs.getInt("answers")%>
                         <td>
-                            <div class="btn-toolbar mb-2 mb-md-0">
-                                <div class="mr-2">
-                                    <a href="edit.jsp?id=<%=rs.getInt("id")%>">
-                                        <button type="button" class="btn btn-sm btn-secondary">
-                                            <i data-feather="edit"></i>
-                                            Edit
-                                        </button>
-                                    </a>
-                                    <a href="delete.jsp?id=<%=rs.getInt("id")%>">
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i data-feather="delete"></i>
-                                            Delete
-                                        </button>
-                                    </a>
-                                </div>
-                            </div>
+                            <a href="edit.jsp?id=<%=rs.getInt("id")%>">
+                                <button type="button" class="btn btn-sm btn-secondary">
+                                    <i data-feather="edit"></i>
+                                    Edit
+                                </button>
+                            </a>
+                            <a href="delete.jsp?id=<%=rs.getInt("id")%>">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i data-feather="delete"></i>
+                                    Delete
+                                </button>
+                            </a>
+                            <button class="btn btn-sm btn-success" onclick="copydialog(<%=rs.getInt("id")%>)">
+                                <i data-feather="share-2"></i>
+                                Share
+                            </button>
                         </td>
                     </tr>
                     <% } %>
@@ -192,6 +192,9 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 <script>
+    function copydialog(id) {
+        window.prompt('Copy the following', 'http://localhost:8080/JavaAnkieta_war_exploded/answer.jsp?id=' + id);
+    }
     feather.replace();
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()

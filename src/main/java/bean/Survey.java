@@ -57,6 +57,28 @@ public class Survey {
         return null;
     }
 
+    public static void addResponseCounter(Integer surveyid) {
+        try {
+            Connection con = ConnectionProvider.getCon();
+            PreparedStatement ps = con.prepareStatement(
+                    "select answers from surveys where id=?"
+            );
+            ps.setInt(1, surveyid);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            Integer answers = rs.getInt("answers");
+            ps = con.prepareStatement(
+                    "update JavaAnkieta.surveys set answers=? where id=?"
+            );
+            ps.setInt(1, answers + 1);
+            ps.setInt(2, surveyid);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void clearSurvey(Integer survey_id) {
         ResultSet rs;
         try {
